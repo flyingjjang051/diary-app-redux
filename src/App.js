@@ -13,9 +13,6 @@ function App() {
   const diaryData = useSelector((state) => {
     return state.diaryList;
   });
-  const count = useSelector((state) => {
-    return state.count;
-  });
 
   // 렌더링을 최소화 하기 위해서 쓴다.
   const diaryAnalysis = useMemo(() => {

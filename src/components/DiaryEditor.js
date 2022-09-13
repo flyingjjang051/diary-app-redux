@@ -1,31 +1,9 @@
 import { useState, useRef } from "react";
-export default function DiaryEditor({ insertDiary }) {
-  // const [writer, setWriter] = useState("");
-  // const [contents, setContents] = useState("");
-  // const [emotion, setEmotion] = useState(1);
-  // obj = {name:"장성호",age:22,weight:90}
-  const radioList = [
-    {
-      emotion: 1,
-      txt: "좋아요",
-    },
-    {
-      emotion: 2,
-      txt: "시르다",
-    },
-    {
-      emotion: 3,
-      txt: "화나요",
-    },
-    {
-      emotion: 4,
-      txt: "별로에요",
-    },
-    {
-      emotion: 5,
-      txt: "감동이에요",
-    },
-  ];
+import { useDispatch } from "react-redux";
+import { insertDiary } from "../store/diary";
+export default function DiaryEditor() {
+  const dispatch = useDispatch();
+
   const writerRef = useRef();
   const contentsRef = useRef();
   const [diaryItem, setDiaryItem] = useState({
@@ -34,9 +12,6 @@ export default function DiaryEditor({ insertDiary }) {
     emotion: 1,
   });
   const insertDiaryItem = function () {
-    // console.log(diaryItem.writer);
-    // console.log(diaryItem.contents);
-    // console.log(diaryItem.emotion);
     if (diaryItem.writer.length < 3) {
       alert("글쓴이는 최소 3글자 이상이어야 합니다.");
       writerRef.current.focus();
@@ -46,8 +21,7 @@ export default function DiaryEditor({ insertDiary }) {
       contentsRef.current.focus();
       return false;
     }
-    // 자식이 부모에게 데이터 전달하는 방법....
-    insertDiary(diaryItem.writer, diaryItem.contents, diaryItem.emotion);
+    dispatch(insertDiary({ date: new Date().getTime(), ...diaryItem }));
     alert("일기가 저장되었습니다.");
     setDiaryItem({
       writer: "",
@@ -55,44 +29,19 @@ export default function DiaryEditor({ insertDiary }) {
       emotion: 1,
     });
   };
-  /*
-  const changeWriter = function (e) {
-    setWriter(e.target.value);
-    console.log(e.target.value);
-  };
-  const changeContents = function (e) {
-    setContents(e.target.value);
-    console.log(e.target.value);
-  };
-  const changeEmotion = function (e) {
-    setEmotion(e.target.value);
-    console.log(e.target.value);
-  };
-  */
-  const changeDiaryItem = function (e) {
-    console.log(e.target.value);
-    // 흩뿌리기....
+  function changeDiaryItem(e) {
     setDiaryItem({
       ...diaryItem,
       [e.target.name]: e.target.value,
     });
-  };
-  // const testObj = { name: "장동건", age: 30, weight: 90 };
-  // const spreadObj = { ...testObj, name: "정형돈" };
-  // console.log(spreadObj.name);
-
-  // const arr01 = ["사자", "호랑이", "치타"];
-  // const arr02 = [...arr01, " 표범"];
-  // console.log(arr01);
-  // console.log(arr02);
-
+  }
   return (
     <div className="container">
       <div className="section">
-        <input type="text" name="writer" value={diaryItem.writer} id="" placeholder="이름을 입력해 주세요." onChange={changeDiaryItem} ref={writerRef} />
+        <input type="text" name="writer" value={diaryItem.writer} id="" placeholder="이름을 입력해 주세요." ref={writerRef} onChange={changeDiaryItem} />
       </div>
       <div className="contents section">
-        <textarea name="contents" id="" cols="30" rows="10" value={diaryItem.contents} placeholder="내용을 입력해 주세요." onChange={changeDiaryItem} ref={contentsRef}></textarea>
+        <textarea name="contents" id="" cols="30" rows="10" value={diaryItem.contents} placeholder="내용을 입력해 주세요." ref={contentsRef} onChange={changeDiaryItem}></textarea>
       </div>
       <div className="section">
         <span>오늘 하루 어땠나요?</span>
@@ -105,7 +54,9 @@ export default function DiaryEditor({ insertDiary }) {
         </select>
       </div>
       <div className="btns section">
-        <button className="btn btnSave">SAVE</button>
+        <button className="btn btnSave" onClick={insertDiaryItem}>
+          SAVE
+        </button>
       </div>
     </div>
   );
