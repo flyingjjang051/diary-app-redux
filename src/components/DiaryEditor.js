@@ -1,8 +1,12 @@
 import { useState, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { insertDiary } from "../store/diary";
 export default function DiaryEditor() {
   const dispatch = useDispatch();
+
+  const count = useSelector((state) => {
+    return state.count;
+  });
 
   const writerRef = useRef();
   const contentsRef = useRef();
@@ -21,7 +25,7 @@ export default function DiaryEditor() {
       contentsRef.current.focus();
       return false;
     }
-    dispatch(insertDiary({ date: new Date().getTime(), ...diaryItem }));
+    dispatch(insertDiary({ id: count + 1, date: new Date().getTime(), ...diaryItem }));
     alert("일기가 저장되었습니다.");
     setDiaryItem({
       writer: "",
